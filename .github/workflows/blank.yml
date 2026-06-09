@@ -1,0 +1,18 @@
+name: Extract and Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Extract ZIP
+        run: unzip TaskCash_Flutter_App.zip
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+      - run: cd taskcash && flutter pub get
+      - run: cd taskcash && flutter build apk --debug
+      - uses: actions/upload-artifact@v3
+        with:
+          name: TaskCash-APK
+          path: taskcash/build/app/outputs/flutter-apk/app-debug.apk
