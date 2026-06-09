@@ -1,0 +1,32 @@
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Unzip project
+        run: unzip TaskCash_Flutter_App.zip -d extracted
+        
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          
+      - name: Get dependencies
+        run: |
+          cd extracted/taskcash
+          flutter pub get
+          
+      - name: Build APK
+        run: |
+          cd extracted/taskcash
+          flutter build apk --debug --no-sound-null-safety
+          
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: TaskCash-APK
+          path: extracted/taskcash/build/app/outputs/flutter-apk/app-debug.apk
